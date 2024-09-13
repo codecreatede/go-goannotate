@@ -72,50 +72,54 @@ func main() {
 		panic(err)
 		log.Fatal(err)
 	}
+
+
 	annotateRead, err := bufio.NewScanner(annotateOpen)
+
+	annotateID := []annotateGFFstruct{}
 	for annotateRead.Scan() {
 		line := annotateRead.Text()
-		anonotateID := []annotateGFFstruct{}
 		annoatateID = append(annotateID, annotateGFFstruct{
-			geneID : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
+			geneID : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 		})
 	}
 
-
+    mRNADet := []mRNADetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID
+		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "mRNA"
-		mRNADet := []mRNADetails{}
+		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "mRNA" {
 		mRNADet = append(mRNADet, mRNADetails{
 			mRNAParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 			mRNAStart : strings.Split(string(line), "\t")[4],
 			mRNAEnd : strings.Split(string(line), "\t")[5],
 		})
+	}
+     }
+  } 
 
-
+    exonDet := []exonDetails{}
 	for annotateRead.Scan() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "exon"
-		exonDet := []exonDetails{}
+		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "exon" {
 		exonDet = append(exonDet, exonDetails{
 			exonParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 			exonStart : strings.Split(string(line),"\t")[4],
 			exonEnd : strings.Split(string(line),"\t")[5],
 		})
 	}
-		}
+}
+	}
 
-
+    cdsDet := []cdsDetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID
+		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "CDS" {
-		cdsDet := []cdsDetails{}
 		cdsDet = append(cdsDet, cdsDetails{
 			cdsParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 			cdsStart : strings.Split(string(line), "\t")[4],
@@ -123,13 +127,13 @@ func main() {
 		})
 		}
     }
-
+}
+    proteinDet := []proteinDetails{}
 	for annotateRead.Scan() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "protein" {
-		proteinDet := []proteinDetails{}
 		proteinDet = append(mRNADet, proteinDetails{
 			proteinParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 			proteinStart : strings.Split(string(line), "\t")[4],
@@ -139,12 +143,12 @@ func main() {
 }
 	}
 
+   fiveDet := []fiveDetails{}
    for annotateRead.Scan() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "five_prime_UTR" {
-		fiveDet := []fiveDetails{}
 		fiveDet = append(mRNADet, fiveDetails{
 			fiveParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
 			fiveStart : strings.Split(string(line), "\t")[4],
@@ -154,7 +158,8 @@ func main() {
 }
    }
 
-		for annotateRead.Scan() {
+		threeDet := []threeDetails{}
+        for annotateRead.Scan() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
@@ -173,3 +178,5 @@ func main() {
 
 
 }
+
+
