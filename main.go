@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"os"
+	"strings"
 )
 
 /*
@@ -88,9 +89,9 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "mRNA"
 		mRNADet := []mRNADetails{}
 		mRNADet = append(mRNADet, mRNADetails{
-			mRNAParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			mRNAStart : strings.Split(string(line), "\t")[4]
-			mRNAEnd : strings.Split(string(line), "\t")[5]
+			mRNAParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			mRNAStart : strings.Split(string(line), "\t")[4],
+			mRNAEnd : strings.Split(string(line), "\t")[5],
 		})
 
 
@@ -101,9 +102,9 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "exon"
 		exonDet := []exonDetails{}
 		exonDet = append(exonDet, exonDetails{
-			exonParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			exonStart : strings.Split(string(line),"\t")[4]
-			exonEnd : strings.Split(string(line),"\t")[5]
+			exonParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			exonStart : strings.Split(string(line),"\t")[4],
+			exonEnd : strings.Split(string(line),"\t")[5],
 		})
 	}
 		}
@@ -116,9 +117,9 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "CDS" {
 		cdsDet := []cdsDetails{}
 		cdsDet = append(cdsDet, cdsDetails{
-			cdsParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			cdsStart : strings.Split(string(line), "\t")[4]
-			cdsEnd : strings.Split(string(line), "\t")[5]
+			cdsParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			cdsStart : strings.Split(string(line), "\t")[4],
+			cdsEnd : strings.Split(string(line), "\t")[5],
 		})
 		}
     }
@@ -130,9 +131,9 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "protein" {
 		proteinDet := []proteinDetails{}
 		proteinDet = append(mRNADet, proteinDetails{
-			proteinParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			proteinStart : strings.Split(string(line), "\t")[4]
-			proteinEnd : strings.Split(string(line), "\t")[5]
+			proteinParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			proteinStart : strings.Split(string(line), "\t")[4],
+			proteinEnd : strings.Split(string(line), "\t")[5],
 		})
 		}
 }
@@ -145,9 +146,9 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "five_prime_UTR" {
 		fiveDet := []fiveDetails{}
 		fiveDet = append(mRNADet, fiveDetails{
-			fiveParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			fiveStart : strings.Split(string(line), "\t")[4]
-			fiveEnd : strings.Split(string(line), "\t")[5]
+			fiveParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			fiveStart : strings.Split(string(line), "\t")[4],
+			fiveEnd : strings.Split(string(line), "\t")[5],
 		})
 	}
 }
@@ -160,12 +161,15 @@ func main() {
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR"
 		threeDet := []threeDetails{}
 		threeDet = append(threeDet, threeDetails{
-			threeParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1]
-			threeStart : strings.Split(string(line), "\t)[4]
-			threeEnd : strings.Split(string(line), "\t)[5]
+			threeParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+			threeStart : strings.Split(string(line), "\t)[4],
+			threeEnd : strings.Split(string(line), "\t)[5],
 		})
 	}
 }
 
 // plotting features to add using the go graphics package for tomorrow
+
+
+
 }
