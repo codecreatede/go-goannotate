@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"log"
 	"os"
 	"strings"
 )
@@ -69,12 +71,11 @@ func main() {
 
 	annoateOpen, err := os.Open(annotateGFF)
 	if err != nil {
-		panic(err)
 		log.Fatal(err)
 	}
 
 
-	annotateRead, err := bufio.NewScanner(annotateOpen)
+	annotateRead := bufio.NewScanner(annotateOpen)
 
 	annotateID := []annotateGFFstruct{}
 	for annotateRead.Scan() {
@@ -143,8 +144,8 @@ func main() {
 }
 	}
 
-   fiveDet := []fiveDetails{}
-   for annotateRead.Scan() {
+   		fiveDet := []fiveDetails{}
+   		for annotateRead.Scan() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
@@ -163,7 +164,7 @@ func main() {
 		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR"
+		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR" {
 		threeDet := []threeDetails{}
 		threeDet = append(threeDet, threeDetails{
 			threeParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
@@ -175,7 +176,7 @@ func main() {
 
 // plotting features to add using the go graphics package for tomorrow
 
-
+ 
 
 }
 
