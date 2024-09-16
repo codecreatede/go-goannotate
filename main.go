@@ -28,156 +28,143 @@ func main() {
 
 	flag.Parse()
 
-  type annotateGFFstruct struct {
-     geneID string
-
+	type annotateGFFstruct struct {
+		geneID string
 	}
 
 	type mRNADetails struct {
 		mRNAParent string
-		mRNAstart string
-		mRNAend string
+		mRNAstart  string
+		mRNAend    string
 	}
 
 	type exonDetails struct {
 		exonParent string
-		exonStart string
-		exonEnd string
+		exonStart  string
+		exonEnd    string
 	}
 
 	type proteinDetails struct {
 		proteinParent string
-		proteinStart string
-		proteinEnd string
+		proteinStart  string
+		proteinEnd    string
 	}
 
 	type cdsDetails struct {
-     cdsParent string
-		 cdsStart string
-		 cdsEnd string
+		cdsParent string
+		cdsStart  string
+		cdsEnd    string
 	}
 
 	type fiveDetails struct {
 		fiveParent string
-		fiveStart string
-		fiveEnd string
+		fiveStart  string
+		fiveEnd    string
 	}
 
 	type threeDetails struct {
 		threeParent string
-		threeStart string
-		threeEnd string
+		threeStart  string
+		threeEnd    string
 	}
 
-	annoateOpen, err := os.Open(annotateGFF)
+	annotateOpen, err := os.Open(*annotateGFF)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	annotateRead := bufio.NewScanner(annotateOpen)
 
 	annotateID := []annotateGFFstruct{}
 	for annotateRead.Scan() {
 		line := annotateRead.Text()
-		annoatateID = append(annotateID, annotateGFFstruct{
-			geneID : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
+		annotateID = append(annotateID, annotateGFFstruct{
+			geneID: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
 		})
 	}
 
-    mRNADet := []mRNADetails{}
+	mRNADet := []mRNADetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "mRNA" {
-		mRNADet = append(mRNADet, mRNADetails{
-			mRNAParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			mRNAStart : strings.Split(string(line), "\t")[4],
-			mRNAEnd : strings.Split(string(line), "\t")[5],
-		})
+			mRNADet = append(mRNADet, mRNADetails{
+				mRNAParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+				mRNAStart:  strings.Split(string(line), "\t")[4],
+				mRNAEnd:    strings.Split(string(line), "\t")[5],
+			})
+		}
 	}
-     }
-  } 
 
-    exonDet := []exonDetails{}
+	exonDet := []exonDetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "exon" {
-		exonDet = append(exonDet, exonDetails{
-			exonParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			exonStart : strings.Split(string(line),"\t")[4],
-			exonEnd : strings.Split(string(line),"\t")[5],
-		})
-	}
-}
+			exonDet = append(exonDet, exonDetails{
+				exonParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+				exonStart:  strings.Split(string(line), "\t")[4],
+				exonEnd:    strings.Split(string(line), "\t")[5],
+			})
+		}
 	}
 
-    cdsDet := []cdsDetails{}
+	cdsDet := []cdsDetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID {
 		line := annotateRead.Text()
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "CDS" {
-		cdsDet = append(cdsDet, cdsDetails{
-			cdsParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			cdsStart : strings.Split(string(line), "\t")[4],
-			cdsEnd : strings.Split(string(line), "\t")[5],
-		})
+			cdsDet = append(cdsDet, cdsDetails{
+				cdsParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+				cdsStart:  strings.Split(string(line), "\t")[4],
+				cdsEnd:    strings.Split(string(line), "\t")[5],
+			})
 		}
-    }
-}
-    proteinDet := []proteinDetails{}
+	}
+	proteinDet := []proteinDetails{}
 	for annotateRead.Scan() {
-		for j := range annotateID {
-		line := annotateRead.Text()
-		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "protein" {
-		proteinDet = append(mRNADet, proteinDetails{
-			proteinParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			proteinStart : strings.Split(string(line), "\t")[4],
-			proteinEnd : strings.Split(string(line), "\t")[5],
-		})
+		for i := range annotateID {
+			line := annotateRead.Text()
+			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
+			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "protein" {
+				proteinDet = append(proteinDet, proteinDetails{
+					proteinParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+					proteinStart:  strings.Split(string(line), "\t")[4],
+					proteinEnd:    strings.Split(string(line), "\t")[5],
+				})
+			}
 		}
-}
 	}
 
-   		fiveDet := []fiveDetails{}
-   		for annotateRead.Scan() {
-		for j := range annotateID {
-		line := annotateRead.Text()
-		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "five_prime_UTR" {
-		fiveDet = append(mRNADet, fiveDetails{
-			fiveParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			fiveStart : strings.Split(string(line), "\t")[4],
-			fiveEnd : strings.Split(string(line), "\t")[5],
-		})
+	fiveDet := []fiveDetails{}
+	for annotateRead.Scan() {
+		for i := range annotateID {
+			line := annotateRead.Text()
+			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
+			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "five_prime_UTR" {
+				fiveDet = append(fiveDet, fiveDetails{
+					fiveParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+					fiveStart:  strings.Split(string(line), "\t")[4],
+					fiveEnd:    strings.Split(string(line), "\t")[5],
+				})
+			}
+		}
+	}
+
+	threeDet := []threeDetails{}
+	for annotateRead.Scan() {
+		for i := range annotateID {
+			line := annotateRead.Text()
+			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
+			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR" {
+				threeDet = append(threeDet, threeDetails{
+					threeParent: strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1],
+					threeStart:  strings.Split(string(line), "\t")[4],
+					threeEnd:    strings.Split(string(line), "\t")[5],
+				})
+			}
+		}
+
+		// plotting features to add using the go graphics package for tomorrow
 	}
 }
-   }
-
-		threeDet := []threeDetails{}
-        for annotateRead.Scan() {
-		for j := range annotateID {
-		line := annotateRead.Text()
-		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
-		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR" {
-		threeDet := []threeDetails{}
-		threeDet = append(threeDet, threeDetails{
-			threeParent : strings.Split(string(strings.Split(strings.HasPrefix(string(line),"Parent"), ",")[0]), "=")[1],
-			threeStart : strings.Split(string(line), "\t)[4],
-			threeEnd : strings.Split(string(line), "\t)[5],
-		})
-	}
-}
-
-// plotting features to add using the go graphics package for tomorrow
-
- 
-
-}
-
-
