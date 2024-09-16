@@ -86,6 +86,7 @@ func main() {
 	mRNADet := []mRNADetails{}
 	for annotateRead.Scan() {
 		line := annotateRead.Text()
+		for i := range annotateID {
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "mRNA" {
 			mRNADet = append(mRNADet, mRNADetails{
@@ -94,11 +95,13 @@ func main() {
 				mRNAEnd:    strings.Split(string(line), "\t")[5],
 			})
 		}
+		}
 	}
 
 	exonDet := []exonDetails{}
 	for annotateRead.Scan() {
 		line := annotateRead.Text()
+		for i := range annotateID {
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "exon" {
 			exonDet = append(exonDet, exonDetails{
@@ -107,11 +110,13 @@ func main() {
 				exonEnd:    strings.Split(string(line), "\t")[5],
 			})
 		}
+		}
 	}
 
 	cdsDet := []cdsDetails{}
 	for annotateRead.Scan() {
 		line := annotateRead.Text()
+		for i := range annotateID {
 		id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 		if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "CDS" {
 			cdsDet = append(cdsDet, cdsDetails{
@@ -120,11 +125,12 @@ func main() {
 				cdsEnd:    strings.Split(string(line), "\t")[5],
 			})
 		}
+		}
 	}
 	proteinDet := []proteinDetails{}
 	for annotateRead.Scan() {
-		for i := range annotateID {
 			line := annotateRead.Text()
+			for i := range annotateID {
 			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "protein" {
 				proteinDet = append(proteinDet, proteinDetails{
@@ -138,8 +144,8 @@ func main() {
 
 	fiveDet := []fiveDetails{}
 	for annotateRead.Scan() {
-		for i := range annotateID {
 			line := annotateRead.Text()
+			for i := range annotateID {
 			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "five_prime_UTR" {
 				fiveDet = append(fiveDet, fiveDetails{
@@ -153,8 +159,8 @@ func main() {
 
 	threeDet := []threeDetails{}
 	for annotateRead.Scan() {
-		for i := range annotateID {
 			line := annotateRead.Text()
+			for i := range annotateID {
 			id := strings.Split(string(strings.Split(strings.HasPrefix(string(line), "Parent"), ",")[0]), "=")[1]
 			if annotateID[i].geneID == id && strings.Split(line, "\t")[2] == "three_prime_UTR" {
 				threeDet = append(threeDet, threeDetails{
@@ -164,7 +170,7 @@ func main() {
 				})
 			}
 		}
-
+  }
 		// plotting features to add using the go graphics package for tomorrow
 	}
 }
