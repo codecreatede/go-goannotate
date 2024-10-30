@@ -376,7 +376,7 @@ func annotateFunc(cmd *cobra.Command, args []string) {
 		fivefile.WriteString(strconv.Itoa(fiveMinusLengthPlot[i]) + "\n")
 	}
 
-	threefile, err := os.Create("genomethree-stats.txt")
+	threefile, err := os.Create("genome-three-stats.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

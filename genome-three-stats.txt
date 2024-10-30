@@ -8,4 +8,13 @@ LengthEstimates on the mRNA
 214
 147
 Length estimates on the plus strand are:
+268
+147
+40
 Length estimates on the negative strand
+477
+335
+157
+279
+214
+211
