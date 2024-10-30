@@ -1,11 +1,26 @@
-# go-graphics
+# go-goannotate
 
-- a golang command line for building the genome annotation graphs and also the gene structure.
+- annotation and genome annotation summarizer.
+- takes a gff file and summarizes all the regions such as mRNA, cds, protein five prime UTR, and three prime UTR. 
 
 ```
-git clone htts.github.com/go-graphics
+git clone htts.github.com/go-goannotate
 go run main.go
 
+```
+- detail usage 
+
+```
+╰─$ go run main.go -h
+annotate and visualize your genome
+
+Usage:
+  golanannotate [flags]
+
+Flags:
+  -A, --annotationfile string   genome annotation (default "path to the annotation file")
+  -h, --help                    help for golanannotate
+exit status 1
 ```
 
 Gaurav Sablok
