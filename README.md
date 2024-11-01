@@ -1,7 +1,8 @@
 # go-goannotate
 
-- annotation and genome annotation summarizer.
-- takes a gff file and summarizes all the regions such as mRNA, cds, protein five prime UTR, and three prime UTR. 
+- annotation and genome annotation visualizer.
+- takes a gff file and visualizes all the regions such as mRNA, cds, protein five prime UTR, and three prime UTR. 
+- uses gonum for the visualization. 
 
 ```
 git clone htts.github.com/go-goannotate

@@ -8,14 +8,19 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 /*
 Author Gaurav Sablok
 Universitat Potsdam
-Date 2024-10-30
+Date 2024-11-1
 
-golang annotate and summarize your genome from the gtf or the gff file.
+golang plotter for the whole genome annotations. Given a gff file, plots the strand
+specific annotations for mRNA, cds, exons and others.
 
 */
 
@@ -286,111 +291,407 @@ func annotateFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	mRNAfile, err := os.Create("genome-mRNA-stats.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	mRNAfile.WriteString("The stats on the mRNA are as follows" + "\n")
-	mRNAfile.WriteString("LengthEstimates on the mRNA" + "\n")
+	var mRNAPlotter plotter.Values
+	var mRNAPlusPlotter plotter.Values
+	var mRNAMinusPlotter plotter.Values
+
 	for i := range mRNALengthPlot {
-		mRNAfile.WriteString(strconv.Itoa(mRNALengthPlot[i]) + "\n")
+		mRNAPlotter = append(mRNAPlotter, float64(mRNALengthPlot[i]))
 	}
-	mRNAfile.WriteString("Length estimates on the plus strand are:" + "\n")
+	mRNA := plot.New()
+	mRNA.Title.Text = "Bar chart"
+	mRNA.Y.Label.Text = "mRNA"
+	w := vg.Points(14)
+
+	barsmRNA, err := plotter.NewBarChart(mRNAPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsmRNA.LineStyle.Width = vg.Length(0)
+	barsmRNA.Color = plotutil.Color(0)
+	barsmRNA.Offset = -w
+	mRNA.Add(barsmRNA)
+	mRNA.Legend.Add("mRNA", barsmRNA)
+	if err := mRNA.Save(20*vg.Inch, 10*vg.Inch, "barmRNA.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range mRNAPlusLengthPlot {
-		mRNAfile.WriteString(strconv.Itoa(mRNAPlusLengthPlot[i]) + "\n")
+		mRNAPlusPlotter = append(mRNAPlusPlotter, float64(mRNAPlusLengthPlot[i]))
 	}
-	mRNAfile.WriteString("Length estimates on the negative strand" + "\n")
+	mRNAPlus := plot.New()
+	mRNAPlus.Title.Text = "Bar chart"
+	mRNAPlus.Y.Label.Text = "mRNAPlus"
+
+	barsmRNAPlus, err := plotter.NewBarChart(mRNAPlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsmRNAPlus.LineStyle.Width = vg.Length(0)
+	barsmRNAPlus.Color = plotutil.Color(0)
+	barsmRNAPlus.Offset = -w
+	mRNAPlus.Add(barsmRNAPlus)
+	mRNAPlus.Legend.Add("mRNAPlus", barsmRNAPlus)
+	if err := mRNAPlus.Save(20*vg.Inch, 10*vg.Inch, "barmRNAPlus.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range mRNAMinusLengthPlot {
-		mRNAfile.WriteString(strconv.Itoa(mRNAMinusLengthPlot[i]) + "\n")
+		mRNAMinusPlotter = append(mRNAPlotter, float64(mRNAMinusLengthPlot[i]))
+	}
+	mRNAMinus := plot.New()
+	mRNAMinus.Title.Text = "Bar chart"
+	mRNAMinus.Y.Label.Text = "mRNA"
+
+	barsmRNAMinus, err := plotter.NewBarChart(mRNAMinusPlotter, w)
+	if err != nil {
+		panic(err)
 	}
 
-	cdsfile, err := os.Create("genome-cds-stats.txt")
-	if err != nil {
-		log.Fatal(err)
+	barsmRNAMinus.LineStyle.Width = vg.Length(0)
+	barsmRNAMinus.Color = plotutil.Color(0)
+	barsmRNAMinus.Offset = -w
+	mRNAMinus.Add(barsmRNA)
+	mRNAMinus.Legend.Add("mRNAMinus", barsmRNAMinus)
+	if err := mRNA.Save(20*vg.Inch, 10*vg.Inch, "barmRNAMinus.png"); err != nil {
+		panic(err)
 	}
-	cdsfile.WriteString("The stats on the cds are as follows" + "\n")
-	cdsfile.WriteString("LengthEstimates on the cds" + "\n")
+
+	var cdsPlotter plotter.Values
+	var cdsPlusPlotter plotter.Values
+	var cdsMinusPlotter plotter.Values
+
 	for i := range cdsLengthPlot {
-		cdsfile.WriteString(strconv.Itoa(cdsLengthPlot[i]) + "\n")
+		cdsPlotter = append(cdsPlotter, float64(cdsLengthPlot[i]))
 	}
-	cdsfile.WriteString("Length estimates on the plus strand are:" + "\n")
+	cds := plot.New()
+	cds.Title.Text = "Bar chart"
+	cds.Y.Label.Text = "cds"
+
+	barscds, err := plotter.NewBarChart(cdsPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barscds.LineStyle.Width = vg.Length(0)
+	barscds.Color = plotutil.Color(0)
+	barscds.Offset = -w
+	cds.Add(barscds)
+	cds.Legend.Add("cds", barscds)
+	if err := cds.Save(20*vg.Inch, 10*vg.Inch, "barcds.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range cdsPlusLengthPlot {
-		cdsfile.WriteString(strconv.Itoa(cdsPlusLengthPlot[i]) + "\n")
+		cdsPlusPlotter = append(cdsPlusPlotter, float64(cdsPlusLengthPlot[i]))
 	}
-	cdsfile.WriteString("Length estimates on the negative strand" + "\n")
+	cdsPlus := plot.New()
+	cdsPlus.Title.Text = "Bar chart"
+	cdsPlus.Y.Label.Text = "cdsPlus"
+
+	barscdsPlus, err := plotter.NewBarChart(cdsPlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barscdsPlus.LineStyle.Width = vg.Length(0)
+	barscdsPlus.Color = plotutil.Color(0)
+	barscdsPlus.Offset = -w
+	cdsPlus.Add(barscdsPlus)
+	cdsPlus.Legend.Add("cdsPlus", barscdsPlus)
+	if err := cdsPlus.Save(20*vg.Inch, 10*vg.Inch, "barcdsPlus.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range cdsMinusLengthPlot {
-		cdsfile.WriteString(strconv.Itoa(cdsMinusLengthPlot[i]) + "\n")
+		cdsMinusPlotter = append(cdsPlotter, float64(cdsMinusLengthPlot[i]))
+	}
+	cdsMinus := plot.New()
+	cdsMinus.Title.Text = "Bar chart"
+	cdsMinus.Y.Label.Text = "cds"
+
+	barscdsMinus, err := plotter.NewBarChart(cdsMinusPlotter, w)
+	if err != nil {
+		panic(err)
 	}
 
-	proteinfile, err := os.Create("genome-protein-stats.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	proteinfile.WriteString("The stats on the protein are as follows" + "\n")
-	proteinfile.WriteString("LengthEstimates on the mRNA" + "\n")
-	for i := range proteinLengthPlot {
-		proteinfile.WriteString(strconv.Itoa(proteinLengthPlot[i]) + "\n")
-	}
-	proteinfile.WriteString("Length estimates on the plus strand are:" + "\n")
-	for i := range proteinPlusLengthPlot {
-		proteinfile.WriteString(strconv.Itoa(proteinPlusLengthPlot[i]) + "\n")
-	}
-	proteinfile.WriteString("Length estimates on the negative strand" + "\n")
-	for i := range proteinMinusLengthPlot {
-		proteinfile.WriteString(strconv.Itoa(proteinMinusLengthPlot[i]) + "\n")
+	barscdsMinus.LineStyle.Width = vg.Length(0)
+	barscdsMinus.Color = plotutil.Color(0)
+	barscdsMinus.Offset = -w
+	cdsMinus.Add(barscds)
+	cdsMinus.Legend.Add("cdsMinus", barscdsMinus)
+	if err := cds.Save(20*vg.Inch, 10*vg.Inch, "barcdsMinus.png"); err != nil {
+		panic(err)
 	}
 
-	exonfile, err := os.Create("genome-exon-stats.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	exonfile.WriteString("The stats on the exon are as follows" + "\n")
-	exonfile.WriteString("LengthEstimates on the exon" + "\n")
+	var exonPlotter plotter.Values
+	var exonPlusPlotter plotter.Values
+	var exonMinusPlotter plotter.Values
+
 	for i := range exonLengthPlot {
-		exonfile.WriteString(strconv.Itoa(exonLengthPlot[i]) + "\n")
+		exonPlotter = append(exonPlotter, float64(exonLengthPlot[i]))
 	}
-	exonfile.WriteString("Length estimates on the plus strand are:" + "\n")
+	exon := plot.New()
+	exon.Title.Text = "Bar chart"
+	exon.Y.Label.Text = "exon"
+
+	barsexon, err := plotter.NewBarChart(exonPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsexon.LineStyle.Width = vg.Length(0)
+	barsexon.Color = plotutil.Color(0)
+	barsexon.Offset = -w
+	exon.Add(barsexon)
+	exon.Legend.Add("exon", barsexon)
+	if err := exon.Save(20*vg.Inch, 10*vg.Inch, "barexon.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range exonPlusLengthPlot {
-		exonfile.WriteString(strconv.Itoa(exonPlusLengthPlot[i]) + "\n")
+		exonPlusPlotter = append(exonPlusPlotter, float64(exonPlusLengthPlot[i]))
 	}
-	exonfile.WriteString("Length estimates on the negative strand" + "\n")
+	exonPlus := plot.New()
+	exonPlus.Title.Text = "Bar chart"
+	exonPlus.Y.Label.Text = "exonPlus"
+
+	barsexonPlus, err := plotter.NewBarChart(exonPlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsexonPlus.LineStyle.Width = vg.Length(0)
+	barsexonPlus.Color = plotutil.Color(0)
+	barsexonPlus.Offset = -w
+	exonPlus.Add(barsexonPlus)
+	exonPlus.Legend.Add("exonPlus", barsexonPlus)
+	if err := exonPlus.Save(20*vg.Inch, 10*vg.Inch, "barexonPlus.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range exonMinusLengthPlot {
-		exonfile.WriteString(strconv.Itoa(exonMinusLengthPlot[i]) + "\n")
+		exonMinusPlotter = append(exonPlotter, float64(exonMinusLengthPlot[i]))
+	}
+	exonMinus := plot.New()
+	exonMinus.Title.Text = "Bar chart"
+	exonMinus.Y.Label.Text = "exon"
+
+	barsexonMinus, err := plotter.NewBarChart(exonMinusPlotter, w)
+	if err != nil {
+		panic(err)
 	}
 
-	fivefile, err := os.Create("genome-five-stats.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fivefile.WriteString("The stats on the five prime UTR are as follows" + "\n")
-	fivefile.WriteString("LengthEstimates on the five prime UTR" + "\n")
-	for i := range fiveLengthPlot {
-		fivefile.WriteString(strconv.Itoa(fiveLengthPlot[i]) + "\n")
-	}
-	fivefile.WriteString("Length estimates on the plus strand are:" + "\n")
-	for i := range fivePlusLengthPlot {
-		fivefile.WriteString(strconv.Itoa(fivePlusLengthPlot[i]) + "\n")
-	}
-	fivefile.WriteString("Length estimates on the negative strand" + "\n")
-	for i := range fiveMinusLengthPlot {
-		fivefile.WriteString(strconv.Itoa(fiveMinusLengthPlot[i]) + "\n")
+	barsexonMinus.LineStyle.Width = vg.Length(0)
+	barsexonMinus.Color = plotutil.Color(0)
+	barsexonMinus.Offset = -w
+	exonMinus.Add(barsexon)
+	exonMinus.Legend.Add("exonMinus", barsexonMinus)
+	if err := exon.Save(20*vg.Inch, 10*vg.Inch, "barexonMinus.png"); err != nil {
+		panic(err)
 	}
 
-	threefile, err := os.Create("genome-three-stats.txt")
+	var proteinPlotter plotter.Values
+	var proteinPlusPlotter plotter.Values
+	var proteinMinusPlotter plotter.Values
+
+	for i := range proteinLengthPlot {
+		proteinPlotter = append(proteinPlotter, float64(proteinLengthPlot[i]))
+	}
+	protein := plot.New()
+	protein.Title.Text = "Bar chart"
+	protein.Y.Label.Text = "protein"
+
+	barsprotein, err := plotter.NewBarChart(proteinPlotter, w)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	threefile.WriteString("The stats on the three prime UTR are as follows" + "\n")
-	threefile.WriteString("LengthEstimates on the mRNA" + "\n")
-	for i := range mRNALengthPlot {
-		threefile.WriteString(strconv.Itoa(threeLengthPlot[i]) + "\n")
+
+	barsprotein.LineStyle.Width = vg.Length(0)
+	barsprotein.Color = plotutil.Color(0)
+	barsprotein.Offset = -w
+	protein.Add(barsprotein)
+	protein.Legend.Add("protein", barsprotein)
+	if err := protein.Save(20*vg.Inch, 10*vg.Inch, "barprotein.png"); err != nil {
+		panic(err)
 	}
-	threefile.WriteString("Length estimates on the plus strand are:" + "\n")
+
+	for i := range proteinPlusLengthPlot {
+		proteinPlusPlotter = append(proteinPlusPlotter, float64(proteinPlusLengthPlot[i]))
+	}
+	proteinPlus := plot.New()
+	proteinPlus.Title.Text = "Bar chart"
+	proteinPlus.Y.Label.Text = "proteinPlus"
+
+	barsproteinPlus, err := plotter.NewBarChart(proteinPlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsproteinPlus.LineStyle.Width = vg.Length(0)
+	barsproteinPlus.Color = plotutil.Color(0)
+	barsproteinPlus.Offset = -w
+	proteinPlus.Add(barsproteinPlus)
+	proteinPlus.Legend.Add("proteinPlus", barsproteinPlus)
+	if err := proteinPlus.Save(20*vg.Inch, 10*vg.Inch, "barproteinPlus.png"); err != nil {
+		panic(err)
+	}
+
+	for i := range proteinMinusLengthPlot {
+		proteinMinusPlotter = append(proteinPlotter, float64(proteinMinusLengthPlot[i]))
+	}
+	proteinMinus := plot.New()
+	proteinMinus.Title.Text = "Bar chart"
+	proteinMinus.Y.Label.Text = "protein"
+
+	barsproteinMinus, err := plotter.NewBarChart(proteinMinusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsproteinMinus.LineStyle.Width = vg.Length(0)
+	barsproteinMinus.Color = plotutil.Color(0)
+	barsproteinMinus.Offset = -w
+	proteinMinus.Add(barsprotein)
+	proteinMinus.Legend.Add("proteinMinus", barsproteinMinus)
+	if err := protein.Save(20*vg.Inch, 10*vg.Inch, "barproteinMinus.png"); err != nil {
+		panic(err)
+	}
+
+	var threePlotter plotter.Values
+	var threePlusPlotter plotter.Values
+	var threeMinusPlotter plotter.Values
+
+	for i := range threeLengthPlot {
+		threePlotter = append(threePlotter, float64(threeLengthPlot[i]))
+	}
+	three := plot.New()
+	three.Title.Text = "Bar chart"
+	three.Y.Label.Text = "three"
+
+	barsthree, err := plotter.NewBarChart(threePlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsthree.LineStyle.Width = vg.Length(0)
+	barsthree.Color = plotutil.Color(0)
+	barsthree.Offset = -w
+	three.Add(barsthree)
+	three.Legend.Add("three", barsthree)
+	if err := three.Save(20*vg.Inch, 10*vg.Inch, "barthree.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range threePlusLengthPlot {
-		threefile.WriteString(strconv.Itoa(threePlusLengthPlot[i]) + "\n")
+		threePlusPlotter = append(threePlusPlotter, float64(threePlusLengthPlot[i]))
 	}
-	threefile.WriteString("Length estimates on the negative strand" + "\n")
+	threePlus := plot.New()
+	threePlus.Title.Text = "Bar chart"
+	threePlus.Y.Label.Text = "threePlus"
+
+	barsthreePlus, err := plotter.NewBarChart(threePlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsthreePlus.LineStyle.Width = vg.Length(0)
+	barsthreePlus.Color = plotutil.Color(0)
+	barsthreePlus.Offset = -w
+	threePlus.Add(barsthreePlus)
+	threePlus.Legend.Add("threePlus", barsthreePlus)
+	if err := threePlus.Save(20*vg.Inch, 10*vg.Inch, "barthreePlus.png"); err != nil {
+		panic(err)
+	}
+
 	for i := range threeMinusLengthPlot {
-		threefile.WriteString(strconv.Itoa(threeMinusLengthPlot[i]) + "\n")
+		threeMinusPlotter = append(threePlotter, float64(threeMinusLengthPlot[i]))
 	}
+	threeMinus := plot.New()
+	threeMinus.Title.Text = "Bar chart"
+	threeMinus.Y.Label.Text = "three"
+
+	barsthreeMinus, err := plotter.NewBarChart(threeMinusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsthreeMinus.LineStyle.Width = vg.Length(0)
+	barsthreeMinus.Color = plotutil.Color(0)
+	barsthreeMinus.Offset = -w
+	threeMinus.Add(barsthree)
+	threeMinus.Legend.Add("threeMinus", barsthreeMinus)
+	if err := three.Save(20*vg.Inch, 10*vg.Inch, "barthreeMinus.png"); err != nil {
+		panic(err)
+	}
+
+	var fivePlotter plotter.Values
+	var fivePlusPlotter plotter.Values
+	var fiveMinusPlotter plotter.Values
+
+	for i := range fiveLengthPlot {
+		fivePlotter = append(fivePlotter, float64(fiveLengthPlot[i]))
+	}
+	five := plot.New()
+	five.Title.Text = "Bar chart"
+	five.Y.Label.Text = "five"
+
+	barsfive, err := plotter.NewBarChart(fivePlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsfive.LineStyle.Width = vg.Length(0)
+	barsfive.Color = plotutil.Color(0)
+	barsfive.Offset = -w
+	five.Add(barsfive)
+	five.Legend.Add("five", barsfive)
+	if err := five.Save(20*vg.Inch, 10*vg.Inch, "barfive.png"); err != nil {
+		panic(err)
+	}
+
+	for i := range fivePlusLengthPlot {
+		fivePlusPlotter = append(fivePlusPlotter, float64(fivePlusLengthPlot[i]))
+	}
+	fivePlus := plot.New()
+	fivePlus.Title.Text = "Bar chart"
+	fivePlus.Y.Label.Text = "fivePlus"
+
+	barsfivePlus, err := plotter.NewBarChart(fivePlusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsfivePlus.LineStyle.Width = vg.Length(0)
+	barsfivePlus.Color = plotutil.Color(0)
+	barsfivePlus.Offset = -w
+	fivePlus.Add(barsfivePlus)
+	fivePlus.Legend.Add("fivePlus", barsfivePlus)
+	if err := fivePlus.Save(20*vg.Inch, 10*vg.Inch, "barfivePlus.png"); err != nil {
+		panic(err)
+	}
+
+	for i := range fiveMinusLengthPlot {
+		fiveMinusPlotter = append(fivePlotter, float64(fiveMinusLengthPlot[i]))
+	}
+	fiveMinus := plot.New()
+	fiveMinus.Title.Text = "Bar chart"
+	fiveMinus.Y.Label.Text = "five"
+
+	barsfiveMinus, err := plotter.NewBarChart(fiveMinusPlotter, w)
+	if err != nil {
+		panic(err)
+	}
+
+	barsfiveMinus.LineStyle.Width = vg.Length(0)
+	barsfiveMinus.Color = plotutil.Color(0)
+	barsfiveMinus.Offset = -w
+	fiveMinus.Add(barsfive)
+	fiveMinus.Legend.Add("fiveMinus", barsfiveMinus)
+	if err := five.Save(20*vg.Inch, 10*vg.Inch, "barfiveMinus.png"); err != nil {
+		panic(err)
+	}
+
 }
